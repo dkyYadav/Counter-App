@@ -1,10 +1,8 @@
-package com.example.counterapp
+package com.example.counterapp.presentation.counter
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,46 +13,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.counterapp.presentation.counter.Home
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.counterapp.presentation.viewmodel.CounterViewModel
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-              setContent {
-            //CounterAppTheme()
-            Home( )
-        }
-    }
-}
-/*
-
 @Composable
-fun CounterAppTheme () {
-    Box (modifier = Modifier.fillMaxSize()
-        .background(color = colorResource(R.color.holo_blue_light))
+fun Home(    counterViewModel: CounterViewModel = viewModel() // ✅ Lifecycle-aware
+) {
+    val Counter by counterViewModel.counter.collectAsState()
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(Color(0xFF6CE8EE))
 
-    ){
-        var count by remember { mutableStateOf(0) }
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,7 +46,7 @@ fun CounterAppTheme () {
                 elevation = CardDefaults.cardElevation(20.dp),
 
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFE1EE6A)
+                    containerColor = Color(0xFFFFC107)
                 ) // Light blue, you can change to any color
             ) {
                 Column(
@@ -76,39 +56,44 @@ fun CounterAppTheme () {
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 10.dp, start = 10.dp),
-                        text = "Number is $count", fontSize = 35.sp
+                        text = "Number is ${Counter}", fontSize = 35.sp
                     )
                     Spacer(modifier = Modifier.padding(15.dp))
 
-                    Row (modifier = Modifier.padding(16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ){
-                        OutlinedButton(onClick = { count++ }
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        OutlinedButton(onClick = { counterViewModel.increment() }
                         ) {
-                            Text(text = "Increment")
+                            Text(text = "Increment",
+                                color = Color.Black)
                         }
                         OutlinedButton(
-                            onClick = { count = 0 },
+                            onClick = { counterViewModel.reset() },
 
-                        ) {
-                            Text("Reset", fontSize = 15.sp)
+                            ) {
+                            Text("Reset", fontSize = 15.sp,
+                                color = Color.Black)
                         }
                         OutlinedButton(onClick = {
-                            if (count >= 1){
-                                count--}
+                            if (Counter >= 1) {
+                                counterViewModel.decrement()
+                            }
                         }
-                        ) { Text(text = "Decrement")}
+                        ) { Text(text = "Decrement",
+                            color = Color.Black)
+
+
+                        }
                     }
                 }
-
             }
         }
     }
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CounterAppTheme()
-}*/
+
+
+
